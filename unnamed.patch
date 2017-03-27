@@ -1,0 +1,283 @@
+Index: .idea/vcs.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/vcs.xml	(revision 797b3482ab288680ecdf651280f79c9ce672a635)
++++ .idea/vcs.xml	(revision 797b3482ab288680ecdf651280f79c9ce672a635)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="VcsDirectoryMappings">
++    <mapping directory="$PROJECT_DIR$" vcs="Git" />
++  </component>
++</project>
+\ No newline at end of file
+Index: project1.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- project1.iml	(revision 797b3482ab288680ecdf651280f79c9ce672a635)
++++ project1.iml	(revision 797b3482ab288680ecdf651280f79c9ce672a635)
+@@ -0,0 +1,11 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<module type="JAVA_MODULE" version="4">
++  <component name="NewModuleRootManager" inherit-compiler-output="true">
++    <exclude-output />
++    <content url="file://$MODULE_DIR$">
++      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
++    </content>
++    <orderEntry type="inheritedJdk" />
++    <orderEntry type="sourceFolder" forTests="false" />
++  </component>
++</module>
+\ No newline at end of file
+Index: src/Driver.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/Driver.java	(revision 797b3482ab288680ecdf651280f79c9ce672a635)
++++ src/Driver.java	(revision 797b3482ab288680ecdf651280f79c9ce672a635)
+@@ -0,0 +1,55 @@
++/**
++ * Created by lumia on 2017/3/17.
++ */
++public class Driver {
++    public static void main(String[] args) {
++        if (args.length > 0) {
++            if (Integer.parseInt(args[0]) < 0)
++                System.err.println(args[0] + " must be >= 0.");
++            else {
++                Sum sumObject = new Sum();
++                int upper = Integer.parseInt(args[0]);
++                Thread thrd = new Thread(new Summation(upper, sumObject));
++                thrd.start();
++                try {
++                    thrd.join();
++                    System.out.println("The sum of " + upper + " is " + sumObject.getSum());
++                } catch (InterruptedException e) {
++                }
++            }
++
++        }
++        else
++            System.err.println("Usage : Summation <integer value");
++    }
++}
++
++class Sum {
++    private int sum;
++
++    public int getSum() {
++        return sum;
++    }
++
++    public void setSum(int sum) {
++        this.sum = sum;
++    }
++
++}
++
++class Summation implements Runnable {
++    private int upper;
++    private Sum sumValue;
++
++    public Summation(int upper, Sum sumValue) {
++        this.upper = upper;
++        this.sumValue = sumValue;
++    }
++
++    public void run() {
++        int sum = 0;
++        for(int i = 0; i <= upper; i++)
++            sum += i;
++        sumValue.setSum(sum);
++    }
++}
+Index: src/Item.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/Item.java	(revision 797b3482ab288680ecdf651280f79c9ce672a635)
++++ src/Item.java	(revision 797b3482ab288680ecdf651280f79c9ce672a635)
+@@ -0,0 +1,51 @@
++import java.util.Objects;
++
++/**
++ * Created by lumia on 2017/3/23.
++ */
++public class Item implements Comparable<Item> {
++    private String description;
++    private int partNumber;
++
++    /**
++     * Constructs an item.
++     *
++     * @param aDescription the item's description
++     * @param aPartNumber  the item's part number
++     */
++    public Item(String aDescription, int aPartNumber) {
++        description = aDescription;
++        partNumber = aPartNumber;
++
++    }
++
++    /**
++     * Gets the description of this item.
++     *
++     * @return the description
++     */
++    public String getDescription() {
++        return description;
++    }
++
++    public String toString() {
++        return "[description=" + description + ", part number=" + partNumber + "]";
++    }
++
++    public boolean equals(Object otherObjectr) {
++        if (this == otherObjectr) return true;
++        if (otherObjectr == null) return false;
++        if (getClass() != otherObjectr.getClass()) return false;
++        Item other = (Item) otherObjectr;
++        return Objects.equals(description, other.description) && partNumber == other.partNumber;
++    }
++
++    public int hashCode() {
++        return Objects.hash(description, partNumber);
++    }
++
++    public int compareTo(Item other) {
++        int diff = Integer.compare(partNumber, other.partNumber);
++        return diff != 0 ? diff : description.compareTo(other.description);
++    }
++}
+Index: src/RodCut.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/RodCut.java	(revision 797b3482ab288680ecdf651280f79c9ce672a635)
++++ src/RodCut.java	(revision 797b3482ab288680ecdf651280f79c9ce672a635)
+@@ -0,0 +1,46 @@
++public class RodCut {
++
++    private int[] r;
++    private int[] s;
++    public RodCut(int n) {
++        r = new int[n];
++        s = new int[n];
++
++    }
++    public static void main(String[] args) {
++        RodCut rd = new RodCut(Integer.parseInt(args[0]));
++        int[] p = {0, 1, 5, 8, 9, 10, 17, 17, 20, 24, 30};
++        rd.BottomUpCutRod(p, Integer.parseInt(args[0]));
++        System.out.print(rd);
++    }
++
++    public void BottomUpCutRod(int[] p, int n) {
++        r[0] = 0;
++        int q;
++        for (int j = 1; j < n; j++) {
++            q = -1;
++            for (int i = 1; i <= j; i++) {
++                if (q < p[i] + r[j - i]) {
++                    q = p[i] + r[j - i];
++                    s[j] = i;
++                }
++            }
++            r[j] = q;
++        }
++    }
++
++    public String toString() {
++        String kb = "";
++        for (int i : r
++             ) {
++            kb = kb + i + "\t";
++        }
++        kb = kb + "\n";
++
++        for (int i :
++                s) {
++            kb = kb + i + "\t";
++        }
++        return kb;
++    }
++}
+\ No newline at end of file
+Index: src/Timer/TImerTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/Timer/TImerTest.java	(revision 797b3482ab288680ecdf651280f79c9ce672a635)
++++ src/Timer/TImerTest.java	(revision 797b3482ab288680ecdf651280f79c9ce672a635)
+@@ -0,0 +1,32 @@
++package Timer;
++
++import javax.swing.*;
++import java.awt.*;
++import java.awt.event.ActionEvent;
++import java.awt.event.ActionListener;
++import java.util.Date;
++
++/**
++ * Created by lumia on 2017/3/19.
++ */
++public class TImerTest {
++    public static void main(String[] args) {
++        ActionListener listener = new TimePrinter();
++
++        // construct a timer that calls the listener
++        // once every 10 second
++        Timer t = new Timer(1000, listener);
++        t.start();
++
++        JOptionPane.showMessageDialog(null, "Quit program?");
++        System.exit(0);
++    }
++}
++
++class TimePrinter implements ActionListener {
++    @Override
++    public void actionPerformed(ActionEvent e) {
++        System.out.println("At the tone, the time is " + new Date());
++        Toolkit.getDefaultToolkit().beep();
++    }
++}
+Index: src/TreeSetTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/TreeSetTest.java	(revision 797b3482ab288680ecdf651280f79c9ce672a635)
++++ src/TreeSetTest.java	(revision 797b3482ab288680ecdf651280f79c9ce672a635)
+@@ -0,0 +1,23 @@
++import java.util.Comparator;
++import java.util.NavigableSet;
++import java.util.SortedSet;
++import java.util.TreeSet;
++
++/**
++ * Created by lumia on 2017/3/23.
++ */
++public class TreeSetTest {
++    public static void main(String[] args) {
++        SortedSet<Item> parts = new TreeSet<>();
++        parts.add(new Item("Toaster", 1234));
++        parts.add(new Item("Widget", 4562));
++        parts.add(new Item("Modem", 9912));
++        System.out.println(parts);
++
++        NavigableSet<Item> sortedByDescription = new TreeSet<>(
++                Comparator.comparing(Item::getDescription));
++
++        sortedByDescription.addAll(parts);
++        System.out.println(sortedByDescription);
++    }
++}
