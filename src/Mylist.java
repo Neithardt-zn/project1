@@ -32,4 +32,8 @@ public class Mylist<E extends Comparable<E>> extends ArrayList<E> {
         return true;
     }
 
+    public Mylist everThree() {
+        Mylist everThreeList = new Mylist();
+        return everThreeList;
+    }
 }
