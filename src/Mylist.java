@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 /**
@@ -37,4 +38,27 @@ public class Mylist<E extends Comparable<E>> extends ArrayList<E> {
         return everThreeList;
 
     }
-}
+
+    public boolean isSimilar(Mylist<E> otherList) {
+        if (this == otherList)
+            return true;
+        if (this.size() != otherList.size())
+            return false;
+        HashMap<E, Integer> map = new HashMap<>();
+        for (E e : this) {
+            if (map.containsKey(e))
+                map.replace(e, map.get(e) + 1);
+            else map.put(e, 1);
+        }
+        HashMap<E, Integer> otherMap = new HashMap<>();
+        for (E e : otherList) {
+            if (map.containsKey(e))
+                map.replace(e, map.get(e) + 1);
+            else map.put(e, 1);
+        }
+        if (map.equals(otherMap))
+            return true;
+        else return false;
+        }
+    }
+
